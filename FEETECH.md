@@ -193,19 +193,18 @@ If multiple bits are set simultaneously, the LED alarm condition value is the su
 
 ## Table of Contents
 
-- [Magnetic Encoder STS Servo - Memory Table Reference](#magnetic-encoder-sts-servo---memory-table-reference)
-  - [1 Servo Communication Protocol](#1-servo-communication-protocol)
-  - [2 Servo Memory Table Definition](#2-servo-memory-table-definition)
-    - [2.1 Version Information](#21-version-information)
+- [1 Servo Communication Protocol](#1-servo-communication-protocol-1)
+- [2 Servo Memory Table Definition](#2-servo-memory-table-definition-1)
+    - [2.1 Version Information](#21-version-information-1)
     - [2.2 EPROM Configuration](#22-eprom-configuration)
-    - [2.3 SRAM Control](#23-sram-control)
-    - [2.4 SRAM Feedback](#24-sram-feedback)
-    - [2.5 Factory Parameters](#25-factory-parameters)
-  - [3 Special Byte Definitions](#3-special-byte-definitions)
-    - [3.1 Servo Phase](#31-servo-phase)
-    - [3.2 Servo Status](#32-servo-status)
+    - [2.3 SRAM Control](#23-sram-control-1)
+    - [2.4 SRAM Feedback](#24-sram-feedback-1)
+    - [2.5 Factory Parameters](#25-factory-parameters-1)
+- [3 Special Byte Definitions](#3-special-byte-definitions)
+    - [3.1 Servo Phase](#31-servo-phase-1)
+    - [3.2 Servo Status](#32-servo-status-1)
     - [3.3 Unload Conditions](#33-unload-conditions)
-    - [3.4 LED Alarm Conditions](#34-led-alarm-conditions)
+    - [3.4 LED Alarm Conditions](#34-led-alarm-conditions-1)
 
 ---
 
