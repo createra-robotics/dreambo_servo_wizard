@@ -1,6 +1,6 @@
 [package]
 name = "dreambo_servo_wizard"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 description = "Console UI for Dynamixel and Feetech servos, powered by rustypot."
 license = "Apache-2.0"
