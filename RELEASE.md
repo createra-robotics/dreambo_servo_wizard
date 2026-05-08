@@ -2,7 +2,7 @@
 
 One-time setup on GitHub
 
-1. Push the repo to GitHub. The workflow runs in whatever repo it's pushed to. Make sure the URL matches what your README/installers expect (your README references createra-robotics/servokit_wizard).
+1. Push the repo to GitHub. The workflow runs in whatever repo it's pushed to. Make sure the URL matches what your README/installers expect (your README references createra-robotics/dreambo_servo_wizard).
 2. Enable workflow write permissions (this is the one click most people miss):
 
 - Repo → Settings → Actions → General → Workflow permissions

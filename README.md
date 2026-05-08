@@ -93,14 +93,6 @@ cargo run --release
 cargo run
 ```
 
-## Release
-
-```bash
-git push -u origin main
-git tag v?.?.?
-git push origin v?.?.?
-```
-
 ## License
 
 Apache-2.0
