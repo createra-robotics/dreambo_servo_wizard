@@ -418,8 +418,8 @@ impl App {
         let Some(bus) = self.bus.as_mut() else { return };
         match bus.write(id, reg.addr as u8, &bytes) {
             Ok(()) => {
+                self.reg_values.insert(reg.addr, Ok(bytes));
                 self.status = format!("Wrote {} to {} (id {}).", value, reg.name, id);
-                self.read_selected_reg();
             }
             Err(e) => {
                 self.status = format!("Write failed: {}", e);
