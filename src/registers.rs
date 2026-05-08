@@ -303,6 +303,9 @@ const XL320_REGS: &[Reg] = &[
 
 // ---------------- Feetech STS3215 ----------------
 const STS3215_REGS: &[Reg] = &[
+    r(0, "Firmware Major Version", RegType::U8),
+    r(1, "Firmware Minor Version", RegType::U8),
+    r(2, "END", RegType::U8),
     r(3, "Model", RegType::U16),
     rw(5, "ID", RegType::U8),
     rw(6, "Baud Rate", RegType::U8),
@@ -320,7 +323,8 @@ const STS3215_REGS: &[Reg] = &[
     rw(21, "P Coefficient", RegType::U8),
     rw(22, "D Coefficient", RegType::U8),
     rw(23, "I Coefficient", RegType::U8),
-    rw(24, "Minimum Startup Force", RegType::U16),
+    rw(24, "Minimum Startup Force", RegType::U8),
+    rw(25, "Integral Limit", RegType::U8),
     rw(26, "CW Dead Zone", RegType::U8),
     rw(27, "CCW Dead Zone", RegType::U8),
     rw(28, "Protection Current", RegType::U16),
@@ -336,19 +340,27 @@ const STS3215_REGS: &[Reg] = &[
     rw(40, "Torque Enable", RegType::Bool),
     rw(41, "Acceleration", RegType::U8),
     rw(42, "Goal Position", RegType::I16),
-    rw(44, "Goal Time", RegType::U16),
-    rw(46, "Goal Speed", RegType::U16),
+    rw(44, "PWM Open-loop Speed", RegType::U16),
+    rw(46, "Goal Speed", RegType::I16),
     rw(48, "Torque Limit", RegType::U16),
     rw(55, "Lock", RegType::Bool),
     r(56, "Present Position", RegType::I16),
-    r(58, "Present Speed", RegType::U16),
+    r(58, "Present Speed", RegType::I16),
     r(60, "Present Load", RegType::U16),
     r(62, "Present Voltage", RegType::U8),
     r(63, "Present Temperature", RegType::U8),
+    r(64, "Async Write Flag", RegType::U8),
     r(65, "Status", RegType::U8),
     r(66, "Moving", RegType::Bool),
+    r(67, "Target Position (Echo)", RegType::I16),
     r(69, "Present Current", RegType::U16),
-    rw(85, "Maximum Acceleration", RegType::U16),
+    r(80, "Movement Speed Threshold", RegType::U8),
+    r(81, "DTs (ms)", RegType::U8),
+    r(82, "Speed Unit Coefficient", RegType::U8),
+    r(83, "Minimum Speed Limit", RegType::U8),
+    r(84, "Maximum Speed Limit", RegType::U8),
+    r(85, "Acceleration Limit", RegType::U8),
+    r(86, "Acceleration Multiplier", RegType::U8),
 ];
 
 // ---------------- Feetech SCS0009 ----------------
@@ -481,6 +493,14 @@ pub const MODELS: &[Model] = &[
         regs: SCS0009_REGS,
         model_number_addr: 3,
         deg_per_count: 360.0 / 4096.0, // 0.087°/count
+    },
+    Model {
+        name: "STS3025BL",
+        model_number: 6410,
+        brand: Brand::Feetech,
+        regs: STS3215_REGS,
+        model_number_addr: 3,
+        deg_per_count: 360.0 / 4096.0,
     },
     Model {
         name: "STS3215",
