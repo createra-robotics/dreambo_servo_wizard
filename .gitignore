@@ -1,0 +1,7 @@
+target/
+
+# Jetbrains
+/.idea
+
+# macOS Finder
+.DS_Store
