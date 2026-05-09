@@ -1,7 +1,7 @@
 use std::time::Duration;
 
 use anyhow::{anyhow, Result};
-use rustypot::DynamixelProtocolHandler;
+use servocom::DynamixelProtocolHandler;
 
 use crate::registers::Protocol;
 

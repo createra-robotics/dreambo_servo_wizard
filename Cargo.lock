@@ -248,8 +248,8 @@ dependencies = [
  "anyhow",
  "crossterm",
  "ratatui",
- "rustypot",
  "serialport",
+ "servocom",
 ]
 
 [[package]]
@@ -645,22 +645,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b39cdef0fa800fc44525c84ccb54a029961a8215f9619753635a9c0d2538d46d"
 
 [[package]]
-name = "rustypot"
-version = "1.4.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7e608135ce018f7b1ad6771f488a66eb0ea44c088e4c2584c89fa9f2e6eed9f1"
-dependencies = [
- "clap",
- "env_logger",
- "log",
- "num_enum",
- "paste",
- "proc-macro2",
- "serialport",
- "signal-hook",
-]
-
-[[package]]
 name = "ryu"
 version = "1.0.23"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -708,6 +692,22 @@ dependencies = [
  "scopeguard",
  "unescaper",
  "windows-sys 0.52.0",
+]
+
+[[package]]
+name = "servocom"
+version = "1.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "3e2e0826bb6393b5e6b23c93f4882cef63e157383aff84781c18ac4f74b8365b"
+dependencies = [
+ "clap",
+ "env_logger",
+ "log",
+ "num_enum",
+ "paste",
+ "proc-macro2",
+ "serialport",
+ "signal-hook",
 ]
 
 [[package]]

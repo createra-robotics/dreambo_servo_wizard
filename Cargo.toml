@@ -12,7 +12,7 @@ readme = "README.md"
 ratatui = "0.29"
 crossterm = "0.28"
 serialport = { version = "4.2", default-features = false }
-rustypot = "1.4"
+servocom = "1.0"
 anyhow = "1"
 
 # The profile that 'dist' will build with
