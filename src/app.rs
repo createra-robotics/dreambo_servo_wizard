@@ -415,16 +415,122 @@ impl App {
             }
         };
         let bytes = encode_value(value, reg.ty);
-        let Some(bus) = self.bus.as_mut() else { return };
-        match bus.write(id, reg.addr as u8, &bytes) {
-            Ok(()) => {
+        if self.bus.is_none() {
+            return;
+        }
+        match self.write_register_eeprom_safe(id, reg, &bytes) {
+            Ok(unlocked) => {
                 self.reg_values.insert(reg.addr, Ok(bytes));
-                self.status = format!("Wrote {} to {} (id {}).", value, reg.name, id);
+                let suffix = if unlocked {
+                    match self.brand {
+                        Brand::Feetech => " (Lock cleared/restored — change persists)",
+                        Brand::Dynamixel => " (torque cycled to allow EEPROM write)",
+                    }
+                } else {
+                    ""
+                };
+                self.status = format!("Wrote {} to {} (id {}).{}", value, reg.name, id, suffix);
             }
             Err(e) => {
                 self.status = format!("Write failed: {}", e);
             }
         }
+    }
+
+    /// Write `bytes` to `reg` on `id`, transparently handling the brand's
+    /// EEPROM-persistence requirement when the target is in the EEPROM region:
+    /// - Feetech: clear Lock (55) before the write and restore it after.
+    /// - Dynamixel: if Torque Enable is on, disable it before the write and
+    ///   restore it after (EEPROM-area writes are rejected while torque is on).
+    /// EEPROM region is detected as addresses below the "Torque Enable" register
+    /// in the model's reg table; if the table has no Torque Enable the write
+    /// goes through unchanged. Returns `Ok(true)` when the unlock dance ran.
+    fn write_register_eeprom_safe(
+        &mut self,
+        id: u8,
+        reg: Reg,
+        bytes: &[u8],
+    ) -> std::result::Result<bool, String> {
+        let regs = self.current_regs();
+        let boundary = regs
+            .iter()
+            .find(|r| r.name == "Torque Enable")
+            .map(|r| r.addr);
+        let in_eeprom = boundary.map_or(false, |b| reg.addr < b);
+
+        if !in_eeprom {
+            return self
+                .raw_write(id, reg.addr as u8, bytes)
+                .map(|_| false)
+                .map_err(|e| e.to_string());
+        }
+
+        match self.brand {
+            Brand::Feetech => {
+                let Some(lock) = regs.iter().find(|r| r.name == "Lock").copied() else {
+                    return self
+                        .raw_write(id, reg.addr as u8, bytes)
+                        .map(|_| false)
+                        .map_err(|e| e.to_string());
+                };
+                self.raw_write(id, lock.addr as u8, &[0])
+                    .map_err(|e| format!("EEPROM unlock failed: {}", e))?;
+                self.reg_values.insert(lock.addr, Ok(vec![0]));
+
+                let write_res = self.raw_write(id, reg.addr as u8, bytes);
+                let relock = self.raw_write(id, lock.addr as u8, &[1]);
+                if relock.is_ok() {
+                    self.reg_values.insert(lock.addr, Ok(vec![1]));
+                }
+                write_res.map_err(|e| e.to_string())?;
+                if let Err(e) = relock {
+                    return Err(format!("write OK but EEPROM relock failed: {}", e));
+                }
+                Ok(true)
+            }
+            Brand::Dynamixel => {
+                let te = regs.iter().find(|r| r.name == "Torque Enable").copied();
+                let was_on = te
+                    .and_then(|r| {
+                        let bus = self.bus.as_mut()?;
+                        bus.read(id, r.addr as u8, 1).ok()
+                    })
+                    .map(|b| b.first().copied().unwrap_or(0) != 0)
+                    .unwrap_or(false);
+
+                if was_on {
+                    let te = te.unwrap();
+                    self.raw_write(id, te.addr as u8, &[0])
+                        .map_err(|e| format!("torque disable failed: {}", e))?;
+                    self.reg_values.insert(te.addr, Ok(vec![0]));
+                }
+
+                let write_res = self.raw_write(id, reg.addr as u8, bytes);
+
+                if was_on {
+                    let te = te.unwrap();
+                    let restore = self.raw_write(id, te.addr as u8, &[1]);
+                    if restore.is_ok() {
+                        self.reg_values.insert(te.addr, Ok(vec![1]));
+                    }
+                    write_res.map_err(|e| e.to_string())?;
+                    if let Err(e) = restore {
+                        return Err(format!("write OK but torque restore failed: {}", e));
+                    }
+                } else {
+                    write_res.map_err(|e| e.to_string())?;
+                }
+                Ok(was_on)
+            }
+        }
+    }
+
+    fn raw_write(&mut self, id: u8, addr: u8, data: &[u8]) -> anyhow::Result<()> {
+        let bus = self
+            .bus
+            .as_mut()
+            .ok_or_else(|| anyhow::anyhow!("bus not open"))?;
+        bus.write(id, addr, data)
     }
 
     pub fn cancel_edit(&mut self) {
