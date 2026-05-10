@@ -47,7 +47,7 @@ pub fn draw(f: &mut Frame, app: &App) {
 fn draw_title(f: &mut Frame, area: Rect) {
     let title = Line::from(vec![
         Span::styled(
-            " Rustypot Wizard ",
+            " Dreambo Servo Wizard ",
             Style::default().fg(Color::White).bg(HEADER_BG).add_modifier(Modifier::BOLD),
         ),
         Span::raw("  "),

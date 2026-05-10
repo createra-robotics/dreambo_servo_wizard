@@ -1,8 +1,6 @@
 use std::time::Duration;
-
 use anyhow::{anyhow, Result};
 use servocom::DynamixelProtocolHandler;
-
 use crate::registers::Protocol;
 
 pub struct Bus {

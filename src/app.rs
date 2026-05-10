@@ -1,9 +1,7 @@
 use std::cell::RefCell;
 use std::collections::HashMap;
 use std::time::Instant;
-
 use ratatui::layout::Rect;
-
 use crate::comm::{list_ports, Bus};
 use crate::registers::{
     decode_value, default_regs, encode_value, lookup_model, model_number_addr, Brand, Model,

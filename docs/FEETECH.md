@@ -23,9 +23,7 @@
 
 ## 1 Servo Communication Protocol
 
-The servo uses the FT-SCS custom protocol. The factory default serial port configuration for SMS servos is a baud rate of 115200 with RS485 bus communication. The baud rate can be configured in the range of 38400–1Mbps, and the default communication address (station ID) is 1.
-
-**FT-SCS Custom Protocol**
+The servo uses the FT-SCS custom protocol. The factory default serial port configuration for SMS servos is a baud rate of `115200` with RS485 bus communication. The baud rate can be configured in the range of `38400` ~ `1Mbps`, and the default communication address (station ID) is 1.
 
 ---
 
@@ -210,9 +208,7 @@ If multiple bits are set simultaneously, the LED alarm condition value is the su
 
 ## 1 Servo Communication Protocol
 
-The servo uses the FT-SCS custom protocol. The factory default serial port configuration for STS servos is a default baud rate of 1M, using TTL single-bus communication with 8 data bits, no parity, and 1 stop bit. The baud rate is configurable in the range of 38400 ~ 1Mbps, and the default communication address (station number) is 1.
-
-**FT-SCS Custom Protocol**
+The servo uses the FT-SCS custom protocol. The factory default serial port configuration for STS servos is a default baud rate of `1000000`, using TTL single-bus communication with 8 data bits, no parity, and 1 stop bit. The baud rate is configurable in the range of `38400` ~ `1Mbps`, and the default communication address (station number) is 1.
 
 ---
 

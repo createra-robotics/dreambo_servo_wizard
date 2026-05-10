@@ -243,7 +243,7 @@ dependencies = [
 
 [[package]]
 name = "dreambo_servo_wizard"
-version = "0.1.3"
+version = "0.1.4"
 dependencies = [
  "anyhow",
  "crossterm",
@@ -696,9 +696,9 @@ dependencies = [
 
 [[package]]
 name = "servocom"
-version = "1.0.0"
+version = "1.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3e2e0826bb6393b5e6b23c93f4882cef63e157383aff84781c18ac4f74b8365b"
+checksum = "03051d14252275766996b9c4af3a6fd47146d84c13122eec8ce99106507038b0"
 dependencies = [
  "clap",
  "env_logger",
