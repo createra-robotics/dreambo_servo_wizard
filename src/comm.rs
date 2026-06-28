@@ -36,6 +36,14 @@ impl Bus {
             .write(self.port.as_mut(), id, addr, data)
             .map_err(|e| anyhow!("write failed: {}", e))
     }
+
+    /// Reconfigure the open port to a new baud rate. Needed after a servo's
+    /// own Baud Rate register is changed so we can keep talking to it.
+    pub fn set_baud(&mut self, baud: u32) -> Result<()> {
+        self.port
+            .set_baud_rate(baud)
+            .map_err(|e| anyhow!("set baud failed: {}", e))
+    }
 }
 
 pub fn list_ports() -> Vec<String> {

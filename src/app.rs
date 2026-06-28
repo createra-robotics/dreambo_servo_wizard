@@ -4,8 +4,8 @@ use std::time::Instant;
 use ratatui::layout::Rect;
 use crate::comm::{list_ports, Bus};
 use crate::registers::{
-    decode_value, default_regs, encode_value, lookup_model, model_number_addr, Brand, Model,
-    MotorControl, Protocol, Reg, COMMON_BAUDRATES,
+    decode_value, default_regs, encode_value, feetech_baud_value, lookup_model, model_number_addr,
+    Brand, Model, MotorControl, Protocol, Reg, COMMON_BAUDRATES,
 };
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -418,6 +418,13 @@ impl App {
         }
         match self.write_register_eeprom_safe(id, reg, &bytes) {
             Ok(unlocked) => {
+                // The servo now answers under its new identity; follow it so
+                // live polling and further edits keep working.
+                if reg.name == "ID" {
+                    if let Some(m) = self.motors.get_mut(self.motor_idx) {
+                        m.id = bytes[0];
+                    }
+                }
                 self.reg_values.insert(reg.addr, Ok(bytes));
                 let suffix = if unlocked {
                     match self.brand {
@@ -476,7 +483,32 @@ impl App {
                 self.reg_values.insert(lock.addr, Ok(vec![0]));
 
                 let write_res = self.raw_write(id, reg.addr as u8, bytes);
-                let relock = self.raw_write(id, lock.addr as u8, &[1]);
+
+                // If the write succeeded and it changed how we address the
+                // servo (its ID or its Baud Rate), the relock must target the
+                // *new* identity — otherwise it lands on the old ID/baud and
+                // times out even though the value write persisted.
+                let mut relock_id = id;
+                if write_res.is_ok() {
+                    match reg.name {
+                        "ID" => relock_id = bytes[0],
+                        "Baud Rate" => {
+                            if let Some(new_baud) = feetech_baud_value(bytes[0]) {
+                                if let Some(bus) = self.bus.as_mut() {
+                                    let _ = bus.set_baud(new_baud);
+                                }
+                                if let Some(i) =
+                                    COMMON_BAUDRATES.iter().position(|&b| b == new_baud)
+                                {
+                                    self.baud_idx = i;
+                                }
+                            }
+                        }
+                        _ => {}
+                    }
+                }
+
+                let relock = self.raw_write(relock_id, lock.addr as u8, &[1]);
                 if relock.is_ok() {
                     self.reg_values.insert(lock.addr, Ok(vec![1]));
                 }

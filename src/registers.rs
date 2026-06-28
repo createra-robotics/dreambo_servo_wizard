@@ -607,6 +607,23 @@ pub const COMMON_BAUDRATES: &[u32] = &[
     9600, 57600, 115200, 1_000_000, 2_000_000, 3_000_000, 4_000_000, 4_500_000, 6_000_000,
 ];
 
+/// Map a Feetech (STS/SMS family) Baud Rate register index to its actual bps.
+/// Used after changing a servo's Baud Rate so the bus can follow it to the new
+/// rate. Returns `None` for indices outside the known table.
+pub fn feetech_baud_value(idx: u8) -> Option<u32> {
+    Some(match idx {
+        0 => 1_000_000,
+        1 => 500_000,
+        2 => 250_000,
+        3 => 128_000,
+        4 => 115_200,
+        5 => 76_800,
+        6 => 57_600,
+        7 => 38_400,
+        _ => return None,
+    })
+}
+
 pub fn decode_value(bytes: &[u8], ty: RegType) -> i64 {
     match ty {
         RegType::U8 | RegType::Bool => bytes[0] as i64,
