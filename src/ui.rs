@@ -55,6 +55,11 @@ fn draw_title(f: &mut Frame, area: Rect) {
             "Dynamixel & Feetech configuration TUI",
             Style::default().fg(Color::Gray),
         ),
+        Span::raw("  "),
+        Span::styled(
+            concat!("v", env!("CARGO_PKG_VERSION")),
+            Style::default().fg(Color::DarkGray),
+        ),
     ]);
     f.render_widget(Paragraph::new(title), area);
 }
